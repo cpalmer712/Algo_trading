@@ -1,7 +1,7 @@
 from alpaca.data.live import CryptoDataStream
 
-API_KEY = "PKCI7JHT9DZFWZGMM1YP"
-SECRET_KEY = "Qk9FiGkjPJuH0cVk2IMU1haUNM3Hi9kkB1LDe7k8"
+API_KEY = "_ddddddddsafds"
+SECRET_KEY = "__"
 
 crypto_stream = CryptoDataStream(API_KEY, SECRET_KEY)
 

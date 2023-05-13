@@ -1,21 +1,22 @@
+import os
+
 from alpaca.data.live import CryptoDataStream
 import csv
 
-API_KEY = ""
-SECRET_KEY = ""
+from my_secrets import ALPACA_API_KEY, ALPACA_SECRET_KEY
 
-crypto_stream = CryptoDataStream(API_KEY, SECRET_KEY)
+crypto_stream = CryptoDataStream(ALPACA_API_KEY, ALPACA_SECRET_KEY)
 
 
 async def bar_callback(bar):
-
     bar_tuple = bar_to_tuple(bar)
     print(
         bar_tuple
     )
 
     # open the file in the write mode
-    f = open('/Users/kenyattaclark/code/personal/Algo_trading/out.csv', 'a')
+    # TODO read from a file or the environment
+    f = open(os.path.join(os.getcwd(), 'out.csv'), 'a')
 
     # create the csv writer
     writer = csv.writer(f)

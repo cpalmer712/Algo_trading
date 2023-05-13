@@ -1,1 +1,0 @@
-IEX_CLOUD_API_TOKEN = 'pk_1d6af356ae4d4a7fa81d84d6921babb2'

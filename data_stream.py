@@ -1,32 +1,23 @@
-from alpaca.data.live import CryptoDataStream
 import csv 
-from csv import DictWriter
-API_KEY = "PKCI7JHT9DZFWZGMM1YP"
-SECRET_KEY = "Qk9FiGkjPJuH0cVk2IMU1haUNM3Hi9kkB1LDe7k8"
+import os
+import logging
+import logging.config
 
-crypto_stream = CryptoDataStream(API_KEY, SECRET_KEY)
+from my_secrets import API_KEY, SECRET_KEY
+from alpaca.data.live import CryptoDataStream
 
-#https://www.geeksforgeeks.org/how-to-append-a-new-row-to-an-existing-csv-file/#
 async def bar_callback(bar):
-    print(
-        bar
-    )
+    bar_tuple = [bar.Symbol, bar.Timestamp, bar.Open, bar.High, bar.low, bar.Close, bar.Volume, bar.Trade_count, bar.Vwap]
 
-    # open the file in the write mode
-    f = open('/Users/carsonpalmer/PythonProjects/Algorithmic Trading/out.csv', 'a')
+    logging.debug(bar_tuple)
 
-    # create the csv writer
+    f = open(os.path.join(os.getcwd(), 'out.csv'), 'a')
     writer = csv.writer(f)
-
-    # write a row to the csv file
-    writer.writerow([bar])
-
-    # close the file
+    writer.writerow(bar_tuple)
     f.close()
 
-# Subscribing to bar event 
-symbol = "BTC/USD"
-crypto_stream.subscribe_bars(bar_callback, symbol)
 
-data = crypto_stream.run()
-
+# Subscribing to bar event
+crypto_stream = CryptoDataStream(API_KEY, SECRET_KEY)
+crypto_stream.subscribe_bars(bar_callback, "BTC/USD")
+crypto_stream.run()

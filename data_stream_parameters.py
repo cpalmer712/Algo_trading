@@ -13,7 +13,7 @@ market_order_sell = MarketOrderRequest(symbol="BTC/USD", qty=1, side=OrderSide.S
 
 
 class MACDSTOC(Strategy): 
-    
+   
     stoc_buy = False
     stoc_sell = False
     
@@ -52,4 +52,5 @@ class MACDSTOC(Strategy):
 data = pd.read_csv('out.csv', header=None)
 stats = data(Strategy)
 stats
+
 

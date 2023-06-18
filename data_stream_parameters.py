@@ -52,3 +52,4 @@ class MACDSTOC(Strategy):
 data = pd.read_csv('out.csv', header=None)
 stats = data(Strategy)
 stats
+

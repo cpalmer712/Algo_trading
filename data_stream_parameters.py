@@ -1,15 +1,21 @@
 import pandas as pd
+from alpaca.trading.client import TradingClient
 from alpaca.trading.requests import MarketOrderRequest
 from alpaca.trading.enums import OrderSide, TimeInForce
-import talib
+import talib 
 from backtesting import Strategy
 from backtesting.lib import crossover
+from my_secrets import API_KEY, SECRET_KEY
+
+trading_client = TradingClient(API_KEY, SECRET_KEY, paper=True)
 
 # Setting parameters for our buy order
-market_order_buy = MarketOrderRequest(symbol="BTC/USD", qty=1, side=OrderSide.BUY, time_in_force=TimeInForce.GTC)
+market_order_data_buy = MarketOrderRequest(symbol="BTC/USD", qty=1, side=OrderSide.BUY, time_in_force=TimeInForce.GTC)
+market_order_buy = trading_client.submit_order(order_data = market_order_data_buy)
 
 # Setting parameters for our buy order
-market_order_sell = MarketOrderRequest(symbol="BTC/USD", qty=1, side=OrderSide.SELL, time_in_force=TimeInForce.GTC)
+market_order_data_sell = MarketOrderRequest(symbol="BTC/USD", qty=1, side=OrderSide.SELL, time_in_force=TimeInForce.GTC)
+market_order_sell = trading_client.submit_order(order_data = market_order_data_sell)
 
 
 class MACDSTOC(Strategy): 
@@ -19,7 +25,7 @@ class MACDSTOC(Strategy):
     
     def init(self):
       
-        #STOCH variables
+        #STOCH/MACD variables
         self.slowk, self.slowd = self.I(talib.STOCH, self.data.High, self.data.Low, self.data.Close, fastk_period=5, slowk_period=3, slowd_period=3)
         self.macd, self.macdsignal, self.macdhist = self.I(talib.MACD, self.data.Close, fastperiod=12, slowperiod=26, signalperiod=9)
     
@@ -40,17 +46,20 @@ class MACDSTOC(Strategy):
         if self.stoc_sell and crossover(self.macdsignal, self.macd):
             #if this statement is true the below command signals a sell through alpaca api
             market_order_sell()
+            print("market order sell")
 
         elif self.stoc_buy and crossover(self.macd, self.macdsignal):
             #buy command to alpaca api
             market_order_buy()
+            print("market order buy")
             
 #bt variable runs the backtest dependant on the data, strategy, and cash
 #other parameters can be added to more complex strategies. Refer to 
 #backtesting.py on github
 #bt = Backtest(df, MACDSTOC, cash = 10_000)
-data = pd.read_csv('out.csv', header=None)
-stats = data(Strategy)
-stats
+df = pd.read_csv('out.csv', header=None)
+stats = df(MACDSTOC)
 
-
+i = 1; x = i + 1
+while x > i:
+    stats

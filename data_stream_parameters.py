@@ -11,19 +11,17 @@ trading_client = TradingClient(API_KEY, SECRET_KEY, paper=True)
 
 # Setting parameters for our buy order
 market_order_data_buy = MarketOrderRequest(symbol="BTC/USD", qty=1, side=OrderSide.BUY, time_in_force=TimeInForce.GTC)
-market_order_buy = trading_client.submit_order(order_data = market_order_data_buy)
+trading_client.submit_order(order_data = market_order_data_buy)
 
 # Setting parameters for our buy order
 market_order_data_sell = MarketOrderRequest(symbol="BTC/USD", qty=1, side=OrderSide.SELL, time_in_force=TimeInForce.GTC)
-market_order_sell = trading_client.submit_order(order_data = market_order_data_sell)
-
-
+trading_client.submit_order(order_data = market_order_data_sell)
 class MACDSTOC(Strategy): 
    
     stoc_buy = False
     stoc_sell = False
     
-    def init(self):
+    def next(self):
       
         #STOCH/MACD variables
         self.slowk, self.slowd = self.I(talib.STOCH, self.data.High, self.data.Low, self.data.Close, fastk_period=5, slowk_period=3, slowd_period=3)
@@ -45,21 +43,16 @@ class MACDSTOC(Strategy):
             
         if self.stoc_sell and crossover(self.macdsignal, self.macd):
             #if this statement is true the below command signals a sell through alpaca api
-            market_order_sell()
+            trading_client.submit_order(order_data = market_order_data_sell)
             print("market order sell")
 
         elif self.stoc_buy and crossover(self.macd, self.macdsignal):
             #buy command to alpaca api
-            market_order_buy()
+            trading_client.submit_order(order_data = market_order_data_buy)
             print("market order buy")
             
-#bt variable runs the backtest dependant on the data, strategy, and cash
-#other parameters can be added to more complex strategies. Refer to 
-#backtesting.py on github
-#bt = Backtest(df, MACDSTOC, cash = 10_000)
-df = pd.read_csv('out.csv', header=None)
-stats = df(MACDSTOC)
+data = pd.read_csv("out.csv")
+columns = ['Symbol', 'Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Trade Count', 'VWAP']
+data.columns = columns
 
-i = 1; x = i + 1
-while x > i:
-    stats
+MACDSTOC(data.columns)

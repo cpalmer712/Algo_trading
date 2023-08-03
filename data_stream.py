@@ -6,9 +6,9 @@ async def bar_callback(BTC):
     print(BTC)
 
     data = {
-        'open': [BTC.open],
-        'close': [BTC.close],
-        'timestamp': [BTC.timestamp]
+        'open': BTC.open,
+        'close': BTC.close,
+        'timestamp': BTC.timestamp
     }
 
     with open('/Users/carsonpalmer/PythonProjects/Algorithmic Trading/out.csv', 'a', newline='') as f:
